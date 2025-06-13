@@ -13,10 +13,17 @@ int tutorial_main(int argc, char *argv[]) {
     gst_init(&argc, &argv);
 
     /* Build the pipeline */
+    // 构建一个由名为playbin的单个元素组成的管道。
     pipeline = gst_parse_launch("playbin uri=https://mogic-effect-test.oss-cn-hangzhou.aliyuncs.com/test/webm/sintel_trailer-480p.webm", NULL);
+    // pipeline = gst_parse_launch("playbin uri=file:///Users/jason/Desktop/sintel_trailer-480p.webm", NULL);
 
     /* Start playing */
-    gst_element_set_state(pipeline, GST_STATE_PLAYING);
+    GstStateChangeReturn state = gst_element_set_state(pipeline, GST_STATE_PLAYING);
+    if (state == GST_STATE_CHANGE_FAILURE) {
+        g_printerr("Unable to set the pipeline to the playing state.\n");
+        gst_object_unref(pipeline);
+        return -1;
+    }
 
     /* Wait until error or EOS */
     bus = gst_element_get_bus(pipeline);
