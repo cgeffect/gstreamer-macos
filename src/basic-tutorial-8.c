@@ -25,8 +25,7 @@ typedef struct _CustomData {
  * The idle handler is added to the mainloop when appsrc requests us to start sending data (need-data signal)
  * and is removed when appsrc has enough data (enough-data signal).
  */
-static gboolean
-push_data(CustomData *data) {
+static gboolean push_data(CustomData *data) {
     GstBuffer *buffer;
     GstFlowReturn ret;
     int i;
@@ -74,8 +73,7 @@ push_data(CustomData *data) {
 
 /* This signal callback triggers when appsrc needs data. Here, we add an idle handler
  * to the mainloop to start pushing data into the appsrc */
-static void
-start_feed(GstElement *source, guint size, CustomData *data) {
+static void start_feed(GstElement *source, guint size, CustomData *data) {
     if (data->sourceid == 0) {
         g_print("Start feeding\n");
         data->sourceid = g_idle_add((GSourceFunc)push_data, data);
@@ -84,8 +82,7 @@ start_feed(GstElement *source, guint size, CustomData *data) {
 
 /* This callback triggers when appsrc has enough data and we can stop sending.
  * We remove the idle handler from the mainloop */
-static void
-stop_feed(GstElement *source, CustomData *data) {
+static void stop_feed(GstElement *source, CustomData *data) {
     if (data->sourceid != 0) {
         g_print("Stop feeding\n");
         g_source_remove(data->sourceid);
@@ -94,8 +91,7 @@ stop_feed(GstElement *source, CustomData *data) {
 }
 
 /* The appsink has received a buffer */
-static GstFlowReturn
-new_sample(GstElement *sink, CustomData *data) {
+static GstFlowReturn new_sample(GstElement *sink, CustomData *data) {
     GstSample *sample;
 
     /* Retrieve the buffer */
@@ -111,8 +107,7 @@ new_sample(GstElement *sink, CustomData *data) {
 }
 
 /* This function is called when an error message is posted on the bus */
-static void
-error_cb(GstBus *bus, GstMessage *msg, CustomData *data) {
+static void error_cb(GstBus *bus, GstMessage *msg, CustomData *data) {
     GError *err;
     gchar *debug_info;
 
@@ -144,6 +139,8 @@ int tutorial_main(int argc, char *argv[]) {
     gst_init(&argc, &argv);
 
     /* Create the elements */
+    // 把数据从应用程序注入pipeline的是appsrc
+    // appsrc可以以多种模式工作：在拉取模式下，每次需要数据时都会向应用程序请求数据。在推送模式下，应用程序按照自己的节奏推送数据。此外，在推送模式下，应用程序可以选择在已提供足够数据时在推送函数中被阻塞，或者可以监听 enough-data和need-data信号来控制流量。本示例实现了后一种方法。
     data.app_source = gst_element_factory_make("appsrc", "audio_source");
     data.tee = gst_element_factory_make("tee", "tee");
     data.audio_queue = gst_element_factory_make("queue", "audio_queue");
@@ -160,6 +157,7 @@ int tutorial_main(int argc, char *argv[]) {
         gst_element_factory_make("videoconvert", "video_convert");
     data.video_sink = gst_element_factory_make("autovideosink", "video_sink");
     data.app_queue = gst_element_factory_make("queue", "app_queue");
+    // 把数据从pipeline提出到应用程序的是appsink
     data.app_sink = gst_element_factory_make("appsink", "app_sink");
 
     /* Create the empty pipeline */

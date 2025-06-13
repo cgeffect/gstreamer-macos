@@ -9,8 +9,7 @@ typedef struct _CustomData {
 } CustomData;
 
 /* Print a tag in a human-readable format (name: value) */
-static void
-print_tag_foreach(const GstTagList *tags, const gchar *tag,
+static void print_tag_foreach(const GstTagList *tags, const gchar *tag,
                   gpointer user_data) {
     GValue val = {
         0,
@@ -32,8 +31,7 @@ print_tag_foreach(const GstTagList *tags, const gchar *tag,
 }
 
 /* Print information regarding a stream */
-static void
-print_stream_info(GstDiscovererStreamInfo *info, gint depth) {
+static void print_stream_info(GstDiscovererStreamInfo *info, gint depth) {
     gchar *desc = NULL;
     GstCaps *caps;
     const GstTagList *tags;
@@ -65,8 +63,7 @@ print_stream_info(GstDiscovererStreamInfo *info, gint depth) {
 }
 
 /* Print information regarding a stream and its substreams, if any */
-static void
-print_topology(GstDiscovererStreamInfo *info, gint depth) {
+static void print_topology(GstDiscovererStreamInfo *info, gint depth) {
     GstDiscovererStreamInfo *next;
 
     if (!info)
@@ -93,8 +90,7 @@ print_topology(GstDiscovererStreamInfo *info, gint depth) {
 
 /* This function is called every time the discoverer has information regarding
  * one of the URIs we provided.*/
-static void
-on_discovered_cb(GstDiscoverer *discoverer, GstDiscovererInfo *info,
+static void on_discovered_cb(GstDiscoverer *discoverer, GstDiscovererInfo *info,
                  GError *err, CustomData *data) {
     GstDiscovererResult result;
     const gchar *uri;
@@ -168,8 +164,7 @@ on_discovered_cb(GstDiscoverer *discoverer, GstDiscovererInfo *info,
 
 /* This function is called when the discoverer has finished examining
  * all the URIs we provided.*/
-static void
-on_finished_cb(GstDiscoverer *discoverer, CustomData *data) {
+static void on_finished_cb(GstDiscoverer *discoverer, CustomData *data) {
     g_print("Finished discovering\n");
 
     g_main_loop_quit(data->loop);
@@ -178,8 +173,7 @@ on_finished_cb(GstDiscoverer *discoverer, CustomData *data) {
 int tutorial_main(int argc, char **argv) {
     CustomData data;
     GError *err = NULL;
-    gchar *uri =
-        "https://mogic-effect-test.oss-cn-hangzhou.aliyuncs.com/test/webm/sintel_trailer-480p.webm";
+    gchar *uri = "https://mogic-effect-test.oss-cn-hangzhou.aliyuncs.com/test/webm/sintel_trailer-480p.webm";
 
     /* if a URI was provided, use it instead of the default one */
     if (argc > 1) {
@@ -194,7 +188,7 @@ int tutorial_main(int argc, char **argv) {
 
     g_print("Discovering '%s'\n", uri);
 
-    /* Instantiate the Discoverer */
+    // 创建一个新的 Discoverer 对象
     data.discoverer = gst_discoverer_new(5 * GST_SECOND, &err);
     if (!data.discoverer) {
         g_print("Error creating discoverer instance: %s\n", err->message);
@@ -203,15 +197,13 @@ int tutorial_main(int argc, char **argv) {
     }
 
     /* Connect to the interesting signals */
-    g_signal_connect(data.discoverer, "discovered",
-                     G_CALLBACK(on_discovered_cb), &data);
-    g_signal_connect(data.discoverer, "finished", G_CALLBACK(on_finished_cb),
-                     &data);
+    g_signal_connect(data.discoverer, "discovered", G_CALLBACK(on_discovered_cb), &data);
+    g_signal_connect(data.discoverer, "finished", G_CALLBACK(on_finished_cb), &data);
 
-    /* Start the discoverer process (nothing to do yet) */
+    // 启动发现过程，但我们尚未提供任何要发现的 URI
     gst_discoverer_start(data.discoverer);
 
-    /* Add a request to process asynchronously the URI passed through the command line */
+    // 将提供的 URI 入队以进行发现。此函数可以将多个 URI 入队。当每个 URI 的发现过程完成后，已注册的回调函数将被触发。
     if (!gst_discoverer_discover_uri_async(data.discoverer, uri)) {
         g_print("Failed to start discovering URI '%s'\n", uri);
         g_object_unref(data.discoverer);
