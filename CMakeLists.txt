@@ -46,5 +46,11 @@ target_link_libraries(tutorial8 PkgConfig::gtk3 PkgConfig::gstreamer PkgConfig::
 add_executable(tutorial9 ./src/basic-tutorial-9.c)
 target_link_libraries(tutorial9 PkgConfig::gtk3 PkgConfig::gstreamer PkgConfig::gstreamer-sdp PkgConfig::gstreamer-app PkgConfig::gstreamer-video PkgConfig::gstreamer-pbutils) 
 
+add_executable(tutorial12 ./src/basic-tutorial-12.c)
+target_link_libraries(tutorial12 PkgConfig::gtk3 PkgConfig::gstreamer PkgConfig::gstreamer-sdp PkgConfig::gstreamer-app PkgConfig::gstreamer-video)
+
+add_executable(tutorial13 ./src/basic-tutorial-13.c)
+target_link_libraries(tutorial13 PkgConfig::gtk3 PkgConfig::gstreamer PkgConfig::gstreamer-sdp PkgConfig::gstreamer-app PkgConfig::gstreamer-video)
+
 add_executable(playback1 ./src/playback-tutorial-1.c)
 target_link_libraries(playback1 PkgConfig::gtk3 PkgConfig::gstreamer PkgConfig::gstreamer-sdp PkgConfig::gstreamer-app PkgConfig::gstreamer-video)
