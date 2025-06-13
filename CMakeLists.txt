@@ -16,6 +16,8 @@ pkg_search_module(gstreamer REQUIRED IMPORTED_TARGET gstreamer-1.0>=1.4)
 pkg_search_module(gstreamer-sdp REQUIRED IMPORTED_TARGET gstreamer-sdp-1.0>=1.4)
 pkg_search_module(gstreamer-app REQUIRED IMPORTED_TARGET gstreamer-app-1.0>=1.4)
 pkg_search_module(gstreamer-video REQUIRED IMPORTED_TARGET gstreamer-video-1.0>=1.4)
+pkg_search_module(gstreamer-audio REQUIRED IMPORTED_TARGET gstreamer-audio-1.0>=1.4)
+pkg_search_module(gstreamer-pbutils REQUIRED IMPORTED_TARGET gstreamer-pbutils-1.0>=1.4)
 
 add_executable(tutorial1 ./src/basic-tutorial-1.c)
 target_link_libraries(tutorial1 PkgConfig::gtk3 PkgConfig::gstreamer PkgConfig::gstreamer-sdp PkgConfig::gstreamer-app PkgConfig::gstreamer-video)
@@ -38,12 +40,11 @@ target_link_libraries(tutorial6 PkgConfig::gtk3 PkgConfig::gstreamer PkgConfig::
 add_executable(tutorial7 ./src/basic-tutorial-7.c)
 target_link_libraries(tutorial7 PkgConfig::gtk3 PkgConfig::gstreamer PkgConfig::gstreamer-sdp PkgConfig::gstreamer-app PkgConfig::gstreamer-video)
 
-# add_executable(tutorial8 ./src/basic-tutorial-8.c)
-# target_link_libraries(tutorial8 PkgConfig::gtk3 PkgConfig::gstreamer PkgConfig::gstreamer-sdp PkgConfig::gstreamer-app PkgConfig::gstreamer-video)
+add_executable(tutorial8 ./src/basic-tutorial-8.c)
+target_link_libraries(tutorial8 PkgConfig::gtk3 PkgConfig::gstreamer PkgConfig::gstreamer-sdp PkgConfig::gstreamer-app PkgConfig::gstreamer-video PkgConfig::gstreamer-audio)
 
-# add_executable(tutorial9 ./src/basic-tutorial-9.c)
-# target_link_libraries(tutorial9 PkgConfig::gtk3 PkgConfig::gstreamer PkgConfig::gstreamer-sdp PkgConfig::gstreamer-app PkgConfig::gstreamer-video)
-
+add_executable(tutorial9 ./src/basic-tutorial-9.c)
+target_link_libraries(tutorial9 PkgConfig::gtk3 PkgConfig::gstreamer PkgConfig::gstreamer-sdp PkgConfig::gstreamer-app PkgConfig::gstreamer-video PkgConfig::gstreamer-pbutils) 
 
 add_executable(playback1 ./src/playback-tutorial-1.c)
 target_link_libraries(playback1 PkgConfig::gtk3 PkgConfig::gstreamer PkgConfig::gstreamer-sdp PkgConfig::gstreamer-app PkgConfig::gstreamer-video)

@@ -1,8 +1,7 @@
 #include <gst/gst.h>
 
 /* Functions below print the Capabilities in a human-friendly format */
-static gboolean
-print_field(GQuark field, const GValue *value, gpointer pfx) {
+static gboolean print_field(GQuark field, const GValue *value, gpointer pfx) {
     gchar *str = gst_value_serialize(value);
 
     g_print("%s  %15s: %s\n", (gchar *)pfx, g_quark_to_string(field), str);
@@ -10,8 +9,7 @@ print_field(GQuark field, const GValue *value, gpointer pfx) {
     return TRUE;
 }
 
-static void
-print_caps(const GstCaps *caps, const gchar *pfx) {
+static void print_caps(const GstCaps *caps, const gchar *pfx) {
     guint i;
 
     g_return_if_fail(caps != NULL);
@@ -34,8 +32,7 @@ print_caps(const GstCaps *caps, const gchar *pfx) {
 }
 
 /* Prints information about a Pad Template, including its Capabilities */
-static void
-print_pad_templates_information(GstElementFactory *factory) {
+static void print_pad_templates_information(GstElementFactory *factory) {
     const GList *pads;
     GstStaticPadTemplate *padtemplate;
 
@@ -81,8 +78,7 @@ print_pad_templates_information(GstElementFactory *factory) {
 }
 
 /* Shows the CURRENT capabilities of the requested pad in the given element */
-static void
-print_pad_capabilities(GstElement *element, gchar *pad_name) {
+static void print_pad_capabilities(GstElement *element, gchar *pad_name) {
     GstPad *pad = NULL;
     GstCaps *caps = NULL;
 
@@ -117,6 +113,7 @@ int tutorial_main(int argc, char *argv[]) {
     gst_init(&argc, &argv);
 
     /* Create the element factories */
+    // 获取创建audiotestsrc的工场
     source_factory = gst_element_factory_find("audiotestsrc");
     sink_factory = gst_element_factory_find("autoaudiosink");
     if (!source_factory || !sink_factory) {
@@ -129,6 +126,7 @@ int tutorial_main(int argc, char *argv[]) {
     print_pad_templates_information(sink_factory);
 
     /* Ask the factories to instantiate actual elements */
+    // 使用工场创建实例, gst_element_factory_find + gst_element_factory_create == gst_element_factory_make
     source = gst_element_factory_create(source_factory, "source");
     sink = gst_element_factory_create(sink_factory, "sink");
 
