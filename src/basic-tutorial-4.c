@@ -1,9 +1,14 @@
+/**
+本教程介绍如何使用 GStreamer 时间相关功能。具体包括：
+如何查询管道以获取流位置或持续时间等信息。
+如何在流中寻找（跳转）到不同的位置（时间）。
+*/
 #include <gst/gst.h>
 #ifdef __APPLE__
 #include <TargetConditionals.h>
 #endif
 
-/* Structure to contain all our information, so we can pass it around */
+/*结构来包含所有信息，因此我们可以传递它*/
 typedef struct _CustomData {
     GstElement *playbin;   /* Our one and only element */
     gboolean playing;      /* Are we in the PLAYING state? */
@@ -13,97 +18,7 @@ typedef struct _CustomData {
     gint64 duration;       /* How long does this media last, in nanoseconds */
 } CustomData;
 
-/* Forward definition of the message processing function */
-static void handle_message(CustomData *data, GstMessage *msg);
-
-int tutorial_main(int argc, char *argv[]) {
-    CustomData data;
-    GstBus *bus;
-    GstMessage *msg;
-    GstStateChangeReturn ret;
-
-    data.playing = FALSE;
-    data.terminate = FALSE;
-    data.seek_enabled = FALSE;
-    data.seek_done = FALSE;
-    data.duration = GST_CLOCK_TIME_NONE;
-
-    /* Initialize GStreamer */
-    gst_init(&argc, &argv);
-
-    /* Create the elements */
-    data.playbin = gst_element_factory_make("playbin", "playbin");
-
-    if (!data.playbin) {
-        g_printerr("Not all elements could be created.\n");
-        return -1;
-    }
-
-    /* Set the URI to play */
-    g_object_set(data.playbin, "uri",
-                 "https://mogic-effect-test.oss-cn-hangzhou.aliyuncs.com/test/webm/sintel_trailer-480p.webm",
-                 NULL);
-
-    /* Start playing */
-    ret = gst_element_set_state(data.playbin, GST_STATE_PLAYING);
-    if (ret == GST_STATE_CHANGE_FAILURE) {
-        g_printerr("Unable to set the pipeline to the playing state.\n");
-        gst_object_unref(data.playbin);
-        return -1;
-    }
-
-    /* Listen to the bus */
-    bus = gst_element_get_bus(data.playbin);
-    do {
-        msg = gst_bus_timed_pop_filtered(bus, 100 * GST_MSECOND,
-                                         GST_MESSAGE_STATE_CHANGED | GST_MESSAGE_ERROR | GST_MESSAGE_EOS | GST_MESSAGE_DURATION);
-
-        /* Parse message */
-        if (msg != NULL) {
-            handle_message(&data, msg);
-        } else {
-            /* We got no message, this means the timeout expired */
-            if (data.playing) {
-                gint64 current = -1;
-
-                /* Query the current position of the stream */
-                if (!gst_element_query_position(data.playbin, GST_FORMAT_TIME,
-                                                &current)) {
-                    g_printerr("Could not query current position.\n");
-                }
-
-                /* If we didn't know it yet, query the stream duration */
-                if (!GST_CLOCK_TIME_IS_VALID(data.duration)) {
-                    if (!gst_element_query_duration(data.playbin, GST_FORMAT_TIME,
-                                                    &data.duration)) {
-                        g_printerr("Could not query current duration.\n");
-                    }
-                }
-
-                /* Print current position and total duration */
-                g_print("Position %" GST_TIME_FORMAT " / %" GST_TIME_FORMAT "\r",
-                        GST_TIME_ARGS(current), GST_TIME_ARGS(data.duration));
-
-                /* If seeking is enabled, we have not done it yet, and the time is right, seek */
-                if (data.seek_enabled && !data.seek_done && current > 10 * GST_SECOND) {
-                    g_print("\nReached 10s, performing seek...\n");
-                    gst_element_seek_simple(data.playbin, GST_FORMAT_TIME,
-                                            GST_SEEK_FLAG_FLUSH | GST_SEEK_FLAG_KEY_UNIT, 30 * GST_SECOND);
-                    data.seek_done = TRUE;
-                }
-            }
-        }
-    } while (!data.terminate);
-
-    /* Free resources */
-    gst_object_unref(bus);
-    gst_element_set_state(data.playbin, GST_STATE_NULL);
-    gst_object_unref(data.playbin);
-    return 0;
-}
-
-static void
-handle_message(CustomData *data, GstMessage *msg) {
+static void handle_message(CustomData *data, GstMessage *msg) {
     GError *err;
     gchar *debug_info;
 
@@ -166,6 +81,98 @@ handle_message(CustomData *data, GstMessage *msg) {
     }
     gst_message_unref(msg);
 }
+
+int tutorial_main(int argc, char *argv[]) {
+    CustomData data;
+    GstBus *bus;
+    GstMessage *msg;
+    GstStateChangeReturn ret;
+
+    data.playing = FALSE;
+    data.terminate = FALSE;
+    data.seek_enabled = FALSE;
+    data.seek_done = FALSE;
+    data.duration = GST_CLOCK_TIME_NONE;
+
+    /* Initialize GStreamer */
+    gst_init(&argc, &argv);
+
+    /* Create the elements */
+    data.playbin = gst_element_factory_make("playbin", "playbin");
+
+    if (!data.playbin) {
+        g_printerr("Not all elements could be created.\n");
+        return -1;
+    }
+
+    /* Set the URI to play */
+    g_object_set(data.playbin, "uri",
+                 "https://mogic-effect-test.oss-cn-hangzhou.aliyuncs.com/test/webm/sintel_trailer-480p.webm",
+                 NULL);
+
+    /* Start playing */
+    ret = gst_element_set_state(data.playbin, GST_STATE_PLAYING);
+    if (ret == GST_STATE_CHANGE_FAILURE) {
+        g_printerr("Unable to set the pipeline to the playing state.\n");
+        gst_object_unref(data.playbin);
+        return -1;
+    }
+
+    /* Listen to the bus */
+    bus = gst_element_get_bus(data.playbin);
+    do {
+        // 阻塞式等待消息, 100毫秒如果没返回则返回null
+        msg = gst_bus_timed_pop_filtered(bus, 100 * GST_MSECOND,
+                                         GST_MESSAGE_STATE_CHANGED | GST_MESSAGE_ERROR | GST_MESSAGE_EOS | GST_MESSAGE_DURATION);
+
+        /* Parse message */
+        if (msg != NULL) {
+            handle_message(&data, msg);
+        } else {
+            /* We got no message, this means the timeout expired */
+            if (data.playing) {
+                gint64 current = -1;
+
+                /* Query the current position of the stream */
+                if (!gst_element_query_position(data.playbin, GST_FORMAT_TIME,
+                                                &current)) {
+                    g_printerr("Could not query current position.\n");
+                }
+
+                /* If we didn't know it yet, query the stream duration */
+                if (!GST_CLOCK_TIME_IS_VALID(data.duration)) {
+                    if (!gst_element_query_duration(data.playbin, GST_FORMAT_TIME,
+                                                    &data.duration)) {
+                        g_printerr("Could not query current duration.\n");
+                    }
+                }
+
+                /* Print current position and total duration */
+                g_print("Position %" GST_TIME_FORMAT " / %" GST_TIME_FORMAT "\r",
+                        GST_TIME_ARGS(current), GST_TIME_ARGS(data.duration));
+
+                /* If seeking is enabled, we have not done it yet, and the time is right, seek */
+                if (data.seek_enabled && !data.seek_done && current > 10 * GST_SECOND) {
+                    g_print("\nReached 10s, performing seek...\n");
+                    // GST_SEEK_FLAG_KEY_UNIT 定位到最近的关键帧, 从关键帧处开始播放
+                    // 如果去掉GST_SEEK_FLAG_KEY_UNIT, 则从精确的时间位置开始播放, 但取决于媒体片段是否提供了足够的媒体索引信息可以精准定位
+                    // 如果没有足够的索引不能精准定位, 则只能定位到最近的关键帧
+                    // GST_SEEK_FLAG_ACCURATE 无论媒体文件是否有足够的索引, 都强制使用精准定位
+                    gst_element_seek_simple(data.playbin, GST_FORMAT_TIME,
+                                            GST_SEEK_FLAG_FLUSH | GST_SEEK_FLAG_KEY_UNIT, 30 * GST_SECOND);
+                    data.seek_done = TRUE;
+                }
+            }
+        }
+    } while (!data.terminate);
+
+    /* Free resources */
+    gst_object_unref(bus);
+    gst_element_set_state(data.playbin, GST_STATE_NULL);
+    gst_object_unref(data.playbin);
+    return 0;
+}
+
 int main(int argc, char *argv[]) {
 #if defined(__APPLE__) && TARGET_OS_MAC && !TARGET_OS_IPHONE
     return gst_macos_main((GstMainFunc)tutorial_main, argc, argv, NULL);
