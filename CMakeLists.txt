@@ -57,3 +57,18 @@ target_link_libraries(playback1 PkgConfig::gtk3 PkgConfig::gstreamer PkgConfig::
 
 add_executable(playback2 ./src/playback-tutorial-2.c)
 target_link_libraries(playback2 PkgConfig::gtk3 PkgConfig::gstreamer PkgConfig::gstreamer-sdp PkgConfig::gstreamer-app PkgConfig::gstreamer-video)
+
+add_executable(playback3 ./src/playback-tutorial-3.c)
+target_link_libraries(playback3 PkgConfig::gtk3 PkgConfig::gstreamer PkgConfig::gstreamer-sdp PkgConfig::gstreamer-app PkgConfig::gstreamer-video PkgConfig::gstreamer-audio)
+
+add_executable(playback4 ./src/playback-tutorial-4.c)
+target_link_libraries(playback4 PkgConfig::gtk3 PkgConfig::gstreamer PkgConfig::gstreamer-sdp PkgConfig::gstreamer-app PkgConfig::gstreamer-video)
+
+add_executable(playback5 ./src/playback-tutorial-5.c)
+target_link_libraries(playback5 PkgConfig::gtk3 PkgConfig::gstreamer PkgConfig::gstreamer-sdp PkgConfig::gstreamer-app PkgConfig::gstreamer-video)
+
+add_executable(playback6 ./src/playback-tutorial-6.c)
+target_link_libraries(playback6 PkgConfig::gtk3 PkgConfig::gstreamer PkgConfig::gstreamer-sdp PkgConfig::gstreamer-app PkgConfig::gstreamer-video)
+
+add_executable(playback7 ./src/playback-tutorial-7.c)
+target_link_libraries(playback7 PkgConfig::gtk3 PkgConfig::gstreamer PkgConfig::gstreamer-sdp PkgConfig::gstreamer-app PkgConfig::gstreamer-video)
