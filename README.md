@@ -20,3 +20,6 @@ https://zhuanlan.zhihu.com/p/1908835110477894598
 #6。 awesome-gstreamer https://github.com/jackersson/awesome-gstreamer/blob/master/README.md
 
 #7。使用 Gstreamer 的 5 个最酷的项目 https://lifestyletransfer.com/top-five-coolest-projects-with-gstreamer/
+
+LiveVideoStack Gstreamer中的视频处理与硬件加速
+https://cloud.tencent.com/developer/article/2257505

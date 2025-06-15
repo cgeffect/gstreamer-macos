@@ -54,3 +54,6 @@ target_link_libraries(tutorial13 PkgConfig::gtk3 PkgConfig::gstreamer PkgConfig:
 
 add_executable(playback1 ./src/playback-tutorial-1.c)
 target_link_libraries(playback1 PkgConfig::gtk3 PkgConfig::gstreamer PkgConfig::gstreamer-sdp PkgConfig::gstreamer-app PkgConfig::gstreamer-video)
+
+add_executable(playback2 ./src/playback-tutorial-2.c)
+target_link_libraries(playback2 PkgConfig::gtk3 PkgConfig::gstreamer PkgConfig::gstreamer-sdp PkgConfig::gstreamer-app PkgConfig::gstreamer-video)
