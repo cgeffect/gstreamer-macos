@@ -5,10 +5,15 @@ project(gstreamer)
 set(CMAKE_C_FLAGS_DEBUG   "-O0 -g")
 set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g")
 
-set(CMAKE_SYSTEM_PROCESSOR "x86_64")
-set(CMAKE_OSX_ARCHITECTURES "x86_64")
-set(CMAKE_OSX_DEPLOYMENT_TARGET "14.0" CACHE STRING "Minimum OS X deployment version")
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_SYSTEM_PROCESSOR "arm64")
+set(CMAKE_OSX_ARCHITECTURES "arm64")
+set(CMAKE_OSX_DEPLOYMENT_TARGET "14" CACHE STRING "Minimum OS X deployment version")
+
+# 系统路径查找 设置qt的软链
+if(CMAKE_SYSTEM_NAME MATCHES "Darwin")
+    set(CMAKE_PREFIX_PATH /opt/homebrew/)
+endif()
 
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(gtk3 REQUIRED IMPORTED_TARGET gtk+-3.0)
@@ -18,6 +23,7 @@ pkg_search_module(gstreamer-app REQUIRED IMPORTED_TARGET gstreamer-app-1.0>=1.4)
 pkg_search_module(gstreamer-video REQUIRED IMPORTED_TARGET gstreamer-video-1.0>=1.4)
 pkg_search_module(gstreamer-audio REQUIRED IMPORTED_TARGET gstreamer-audio-1.0>=1.4)
 pkg_search_module(gstreamer-pbutils REQUIRED IMPORTED_TARGET gstreamer-pbutils-1.0>=1.4)
+# pkg_search_module(gstreamer-rtsp REQUIRED IMPORTED_TARGET gstreamer-rtsp-server-1.0>=1.4)
 
 add_executable(tutorial1 ./src/basic-tutorial-1.c)
 target_link_libraries(tutorial1 PkgConfig::gtk3 PkgConfig::gstreamer PkgConfig::gstreamer-sdp PkgConfig::gstreamer-app PkgConfig::gstreamer-video)
@@ -72,3 +78,11 @@ target_link_libraries(playback6 PkgConfig::gtk3 PkgConfig::gstreamer PkgConfig::
 
 add_executable(playback7 ./src/playback-tutorial-7.c)
 target_link_libraries(playback7 PkgConfig::gtk3 PkgConfig::gstreamer PkgConfig::gstreamer-sdp PkgConfig::gstreamer-app PkgConfig::gstreamer-video)
+
+add_executable(play-ogg ./src/play-ogg.c)
+target_link_libraries(play-ogg PkgConfig::gtk3 PkgConfig::gstreamer PkgConfig::gstreamer-sdp PkgConfig::gstreamer-app PkgConfig::gstreamer-video)
+
+add_executable(gst-decoder ./src/gst-decoder.c)
+target_link_libraries(gst-decoder PkgConfig::gtk3 PkgConfig::gstreamer PkgConfig::gstreamer-sdp PkgConfig::gstreamer-app PkgConfig::gstreamer-video)
+
+add_subdirectory(player)
