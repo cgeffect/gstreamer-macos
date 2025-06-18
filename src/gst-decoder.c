@@ -55,6 +55,15 @@ static GstFlowReturn new_sample(GstAppSink *appsink, gpointer user_data) {
     if (sample) {
         buffer = gst_sample_get_buffer(sample);
         if (buffer) {
+
+            // 获取 PTS 信息
+            GstClockTime pts = GST_BUFFER_PTS(buffer);
+            if (GST_CLOCK_TIME_IS_VALID(pts)) {
+                g_print("Received frame with PTS: %" GST_TIME_FORMAT "\n", GST_TIME_ARGS(pts));
+            } else {
+                g_print("Received frame with invalid PTS\n");
+            }
+
             if (gst_buffer_map(buffer, &map, GST_MAP_READ)) {
                 // 这里可以处理内存中的 YUV 数据
                 g_print("Received a frame of size %zu bytes\n", map.size);
@@ -87,7 +96,7 @@ int main(int argc, char *argv[]) {
     gst_init(&argc, &argv);
 
     argc = 2;
-    argv[1] = "./30_50.mp4";
+    argv[1] = "/Users/jason/Desktop/test10.mp4";
     /* 检查输入参数 */
     if (argc != 2) {
         g_printerr("Usage: %s <input MP4 file>\n", argv[0]);

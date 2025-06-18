@@ -25,6 +25,11 @@ void PlayerController::init(std::string jsonUrl) {
     videoTimer_ = new VideoTimer(this);
     connect(videoTimer_, &VideoTimer::timestampUpdated, this, &PlayerController::onTimestampUpdated);
 
+    // 初始化解码器
+    if (!decoder_.init("/Users/jason/Desktop/test10.mp4")) {
+        std::cerr << "Failed to initialize decoder" << std::endl;
+        return;
+    }
     // 渲染第一帧
     onTimestampUpdated(0);
 }
@@ -40,12 +45,13 @@ void PlayerController::onTimestampUpdated(int64_t timestamp) {
     // 添加任务到队列
     async::Operation task;
     task.setTaskBlock([this, timestamp]() {
-        // int renderRet = root_->forceFlush(timestamp);
-        // if (renderRet != 0) {
-        //     std::cout << "task forceFlush error: " << timestamp << std::endl;
-        // }
-        // root_->readPixels(root_->width(), root_->height(), imageData.data());
-        // emit updateTexture(imageData.data(), root_->width(), root_->height());
+        std::vector<uint8_t> frameData;
+        int width = 0;
+        int height = 0;
+        if (!decoder_.DecodeOnFrame(frameData, width, height)) {
+            std::cerr << "Failed to decode frame at timestamp: " << timestamp << std::endl;
+        }
+        emit updateTexture(frameData.data(), width, height);
     });
     task.setCompletionBlock([timestamp]() {
         std::cout << "task finished: " << timestamp << std::endl;
@@ -94,3 +100,28 @@ PlayerController::~PlayerController() {
 }
 
 } // namespace vleap
+
+
+/*
+
+#include "Decoder.h"
+#include <iostream>
+
+int main() {
+    Decoder decoder;
+    if (decoder.init("./30_50.mp4", "./test_live.yuv")) {
+        std::cout << "Decoder initialized successfully." << std::endl;
+        // 解码一定数量的帧
+        for (int i = 0; i < 100; ++i) {
+            if (!decoder.DecodeOnFrame()) {
+                std::cout << "Decoding finished or failed." << std::endl;
+                break;
+            }
+        }
+        decoder.stop();
+    } else {
+        std::cout << "Decoder initialization failed." << std::endl;
+    }
+    return 0;
+}
+*/

@@ -7,6 +7,7 @@
 #include "view/util/thread/OperationQueue.h"
 #include "view/util/thread/QTaskQueueThread.h"
 #include "view/util/VideoTimer.h"
+#include "decode/Decoder.h"
 
 namespace vleap {
 class PlayerController : public QObject {
@@ -41,6 +42,8 @@ private:
     int64_t durationMs_ = 0;
     int64_t timestampMs_ = 0;
     bool isSeeking = false;
+
+    Decoder decoder_;
 };
 
 } // namespace vleap
