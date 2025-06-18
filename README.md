@@ -27,3 +27,7 @@ https://cloud.tencent.com/developer/article/2257505
 安装方法
 cd /opt/homebrew/bin
 ./brew install gstreamer
+
+
+GStreamer 相关音视频技术
+https://blog.csdn.net/automoblie0/article/details/146603037
