@@ -28,5 +28,8 @@ pkg_search_module(gstreamer-rtsp REQUIRED IMPORTED_TARGET gstreamer-rtsp-server-
 add_executable(test-mp4 ./test-mp4.c)
 target_link_libraries(test-mp4 PkgConfig::gtk3 PkgConfig::gstreamer PkgConfig::gstreamer-sdp PkgConfig::gstreamer-app PkgConfig::gstreamer-video PkgConfig::gstreamer-rtsp)
 
+add_executable(test-ogg ./test-ogg.c)
+target_link_libraries(test-ogg PkgConfig::gtk3 PkgConfig::gstreamer PkgConfig::gstreamer-sdp PkgConfig::gstreamer-app PkgConfig::gstreamer-video PkgConfig::gstreamer-rtsp)
+
 add_executable(test-readme ./test-readme.c)
 target_link_libraries(test-readme PkgConfig::gtk3 PkgConfig::gstreamer PkgConfig::gstreamer-sdp PkgConfig::gstreamer-app PkgConfig::gstreamer-video PkgConfig::gstreamer-rtsp)
