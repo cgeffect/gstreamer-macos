@@ -15,8 +15,11 @@ if(CMAKE_SYSTEM_NAME MATCHES "Darwin")
     set(CMAKE_PREFIX_PATH /opt/homebrew/)
 endif()
 
+# 使用 CMake 的 find_package 命令查找 PkgConfig 模块
 find_package(PkgConfig REQUIRED)
+# pkg_check_modules 是 PkgConfig 模块提供的命令，用于检查 gtk+-3.0 库是否存在
 pkg_check_modules(gtk3 REQUIRED IMPORTED_TARGET gtk+-3.0)
+# pkg_search_module 同样是 PkgConfig 模块提供的命令，用于搜索 gstreamer-1.0 库，且要求版本不低于 1.4。
 pkg_search_module(gstreamer REQUIRED IMPORTED_TARGET gstreamer-1.0>=1.4)
 pkg_search_module(gstreamer-sdp REQUIRED IMPORTED_TARGET gstreamer-sdp-1.0>=1.4)
 pkg_search_module(gstreamer-app REQUIRED IMPORTED_TARGET gstreamer-app-1.0>=1.4)
@@ -84,4 +87,4 @@ target_link_libraries(play-ogg PkgConfig::gtk3 PkgConfig::gstreamer PkgConfig::g
 add_executable(gst-decoder ./src/gst-decoder.c)
 target_link_libraries(gst-decoder PkgConfig::gtk3 PkgConfig::gstreamer PkgConfig::gstreamer-sdp PkgConfig::gstreamer-app PkgConfig::gstreamer-video)
 
-add_subdirectory(player)
+# add_subdirectory(player)

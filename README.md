@@ -1,11 +1,15 @@
 
-https://blog.csdn.net/shishanwen/article/details/122797747?spm=1001.2101.3001.6650.4&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-4-122797747-blog-139627336.235%5Ev43%5Epc_blog_bottom_relevance_base2&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-4-122797747-blog-139627336.235%5Ev43%5Epc_blog_bottom_relevance_base2&utm_relevant_index=8
+如何编译
+在macOS上安装arm64的homebrew, 然后安装arm64位的gstreamer
 
-https://zhuanlan.zhihu.com/p/1908835110477894598
+安装方法
+cd /opt/homebrew/bin
+./brew install gstreamer
+
 
 生成环境的GStreamer.framework和devel的GStreamer.framework目录结构和内容是不同的
 
-
+文档
 #1。官方文档 https://gstreamer.freedesktop.org/documentation/tutorials/index.html?gi-language=c
 
 #2。Gstreamer Github 页面 https://github.com/GStreamer
@@ -22,11 +26,6 @@ https://zhuanlan.zhihu.com/p/1908835110477894598
 
 LiveVideoStack Gstreamer中的视频处理与硬件加速
 https://cloud.tencent.com/developer/article/2257505
-
-使用arm64位的gstreamer和qt
-安装方法
-cd /opt/homebrew/bin
-./brew install gstreamer
 
 
 GStreamer 相关音视频技术
