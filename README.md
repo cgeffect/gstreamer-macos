@@ -30,3 +30,6 @@ https://cloud.tencent.com/developer/article/2257505
 
 GStreamer 相关音视频技术
 https://blog.csdn.net/automoblie0/article/details/146603037
+
+gstreamer CMake 编译
+https://cloud.tencent.com/developer/ask/sof/107978377
